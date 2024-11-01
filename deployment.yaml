@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-go-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-go-app
+  template:
+    metadata:
+      labels:
+        app: my-go-app
+    spec:
+      containers:
+        - name: my-go-app
+          image: my-go-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 9000
+          env:
+                  - name: DB_HOST
+                    value: "postgres-service"
+                  - name: DB_PORT
+                    value: "5432"
+                  - name: DB_USER
+                    value: "niclub"  # نام کاربری پایگاه داده
+                  - name: DB_PASS
+                    value: "niclub"  # رمز عبور پایگاه داده
+                  - name: DB_NAME
+                    value: "payments"
