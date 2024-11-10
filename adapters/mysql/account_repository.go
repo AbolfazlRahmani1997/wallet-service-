@@ -13,9 +13,9 @@ func NewAccountRepository(db *gorm.DB) *AccountRepository {
 	return &AccountRepository{db: db}
 }
 
-func (a AccountRepository) Create(account domain.Account) error {
+func (a AccountRepository) Create(account *domain.Account) error {
 
-	return a.db.Create(account).Error
+	return a.db.Create(&account).Error
 }
 
 func (a AccountRepository) FindById(id string) (*domain.Account, error) {

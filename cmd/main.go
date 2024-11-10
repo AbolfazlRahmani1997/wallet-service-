@@ -18,8 +18,10 @@ func main() {
 	dbTransaction := mysql.NewDBTransaction(db)
 	WalletService := service.NewWalletService(dbTransaction, walletRepository, documentRepository, "1", transactionRepository)
 	WalletHandler := http.NewWalletHandler(WalletService)
-
-	api.InitRouter(WalletHandler)
+	accountRepository := mysql.NewAccountRepository(db)
+	accountService := service.NewAccountService(accountRepository)
+	AccountHandler := http.NewAccountHandler(accountService)
+	api.InitRouter(WalletHandler, AccountHandler)
 	err := api.Start("127.0.0.1:9000")
 	if err != nil {
 		return

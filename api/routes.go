@@ -7,7 +7,7 @@ import (
 
 var engine *gin.Engine
 
-func InitRouter(walletHandler *http.Handler) {
+func InitRouter(walletHandler *http.Handler, accountHandler *http.AccountHandler) {
 	gin.SetMode(gin.DebugMode)
 	engine = gin.Default()
 
@@ -16,6 +16,9 @@ func InitRouter(walletHandler *http.Handler) {
 	walletRoute.POST("/transfer", walletHandler.Transfer)
 	walletRoute.POST("/charging", walletHandler.Charging)
 	walletRoute.POST("/check_out", walletHandler.Charging)
+
+	accountRoute := engine.Group("account")
+	accountRoute.POST("create", accountHandler.CreateAccount)
 
 }
 

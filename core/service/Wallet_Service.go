@@ -23,9 +23,8 @@ func NewWalletService(dbTransaction *mysql.DBTransaction, WalletRepository *mysq
 	return WalletService{dbTransaction: dbTransaction, WalletRepository: WalletRepository, DocumentRepository: DocumentRepository, walletIdMaster: 1, TransactionRepository: TransactionRepository}
 }
 
-func (ws *WalletService) CreateWallet() (domain.Wallet, error) {
+func (ws *WalletService) CreateWallet(wallet domain.Wallet) (domain.Wallet, error) {
 
-	wallet := domain.Wallet{Balance: 0, CreatedAt: time.Now(), UpdatedAt: time.Now()}
 	err := ws.WalletRepository.Create(&wallet)
 	if err != nil {
 		return wallet, err
@@ -60,7 +59,7 @@ func (ws *WalletService) CashIn(WalletId uint, Amount float64) (domain.Document,
 
 		WalletOrigin:      ws.walletIdMaster,
 		WalletDestination: wallet.ID,
-		TrackingCode:      "",
+		TrackingCode:      GenerateTrackId(),
 		Type:              domain.CashIn,
 		Amount:            Amount,
 		Status:            domain.Created,

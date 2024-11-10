@@ -3,6 +3,7 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"payment/core/domain"
 	"payment/core/service"
 )
 
@@ -21,7 +22,7 @@ func (h *Handler) CreateWallet(c *gin.Context) {
 		return
 	}
 
-	wallet, err := h.WalletService.CreateWallet()
+	wallet, err := h.WalletService.CreateWallet(domain.Wallet{Balance: 0, WalletType: json.Type, AccountId: json.Account})
 	if err != nil {
 		return
 	}
@@ -41,7 +42,8 @@ func (h *Handler) Transfer(c *gin.Context) {
 }
 
 type CreateWalletRequest struct {
-	Password string `json:"password" binding:"required"`
+	Type    domain.WalletType `json:"Type" binding:"required"`
+	Account uint              `json:"Account_Id" binding:"required"`
 }
 
 type TransferRequest struct {
@@ -61,13 +63,13 @@ type ChangeRequest struct {
 	Currency     string  `json:"currency" binding:"required"`
 }
 
-func (ws Handler) Charging(c *gin.Context) {
+func (h Handler) Charging(c *gin.Context) {
 	var json ChargingRequest
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	document, err := ws.WalletService.CashIn(json.WalletOrigin, json.Amount)
+	document, err := h.WalletService.CashIn(json.WalletOrigin, json.Amount)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
